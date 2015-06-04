@@ -7,16 +7,16 @@ namespace :git do
   set :git_environmental_variables, ->() {
     {
       git_askpass: "/bin/echo",
-      git_ssh:     "#{fetch(:tmp_dir)}/#{fetch(:application)}/git-ssh.sh"
+      git_ssh:     "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}/git-ssh.sh"
     }
   }
 
   desc 'Upload the git wrapper script, this script guarantees that we can script git without getting an interactive prompt'
   task :wrapper do
     on release_roles :all do
-      execute :mkdir, "-p", "#{fetch(:tmp_dir)}/#{fetch(:application)}/"
-      upload! StringIO.new("#!/bin/sh -e\nexec /usr/bin/ssh -o PasswordAuthentication=no -o StrictHostKeyChecking=no \"$@\"\n"), "#{fetch(:tmp_dir)}/#{fetch(:application)}/git-ssh.sh"
-      execute :chmod, "+x", "#{fetch(:tmp_dir)}/#{fetch(:application)}/git-ssh.sh"
+      execute :mkdir, "-p", "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}/"
+      upload! StringIO.new("#!/bin/sh -e\nexec /usr/bin/ssh -o PasswordAuthentication=no -o StrictHostKeyChecking=no \"$@\"\n"), "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}/git-ssh.sh"
+      execute :chmod, "+x", "#{fetch(:tmp_dir)}/#{fetch(:application)}_#{fetch(:stage)}/git-ssh.sh"
     end
   end
 
